@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="form-label mb-3 mx-auto">
+        <form method="POST" novalidate class="needs-validation">
+
+          <h2 class=" mb-4">Sign Up</h2>
+
+          {% csrf_token %}
+          {% for field in form %}
+          <div class="form-label mb-2 ">
+            <label>{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+            <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+            <div class="invalid-feedback">{{ field.errors }}</div>
+          </div>
+          {% endfor %}
+
+          <button type="submit" class="btn btn-primary">Register</button>
+          <p>Already has an account? <a href="{% url 'login' %}" class="btn btn-primary">Login</a></p>
+
+        </form>
+    </div>
+
+{% endblock content %}
+

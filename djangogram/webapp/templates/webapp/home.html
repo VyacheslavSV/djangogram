@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="mb-4"> Posts </h1>
+
+{% for post in posts %}
+    <h2> {{post.title}} </h2>
+    <small>Published on {{ post.published_at | date:"M d, Y" }} by {{ post.author | title}}</small>
+    {% if request.user != post.author %}
+
+    <form action="{% url 'subscribe' post.author.id %}" method="post">
+        {% csrf_token %}
+            {% if post.author not in request.user.profile.subscriptions.all %}
+                <p><button class="btn btn-primary subscribe-ajax" type="button" >Subscribed</button></p>
+            {% elif post.author in request.user.profile.subscriptions.all %}
+                <p><button class="btn btn-secondary subscribe-ajax" type="button" >Unsubscribed</button></p>
+            {% endif %}
+    </form>
+    {% endif %}
+    <p> {{post.caption}} </p>
+
+    {% for one_post_image in post.images.all %}
+        <img class="img-responsive img-rounded" src = "{{ one_post_image.image.url }}" class="img-rounded"
+             alt = "{{ one_post_image.image }}">
+    {% endfor %}
+    <form action="{% url 'like-post' post.id %}" method="post">
+        {%csrf_token %}
+            {% if request.user in post.likes.all %}
+                <p><button class="btn btn-danger like-ajax" type="button">Unlike</button>  <span class="count_likes" >{{ post.likes.count }}</span></p>
+            {% else %}
+                <p><button class="btn btn-success like-ajax" type="button">Like</button>  <span class="count_likes" >{{ post.likes.count }}</span></p>
+            {% endif %}
+    </form>
+
+    <p>
+        {% for post_teg in post.tags.all %}
+            <small class="text-lowercase "> #{{post_teg.tag.name}} </small>
+        {% endfor %}
+    </p>
+    <p>
+        <a href = "{% url 'all-comments-for-post' post.id %}" class="btn btn-info"> Comments </a>
+    </p>
+    {% if request.user.is_authenticated and request.user == post.author %}
+    <p>
+        <a href = "{% url 'post-edit' post.id %}" class="btn btn-outline-primary"> Edit </a>
+        <a href = "{% url 'post-delete' post.id %}" class="btn btn-outline-danger"> Delete </a>
+    </p>
+    {% endif %}
+    {% endfor %}
+
+
+
+
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script src="{% static 'webapp/js/ajax.js' %}"></script>
+
+{% endblock content %}

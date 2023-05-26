@@ -1,0 +1,13 @@
+1. You need fill in the required information in .env
+2. Command use:
+    build containers-
+        docker-compose -f docker-compose.prod.yaml up -d --build
+    db migrate
+        docker-compose -f docker-compose.prod.yml exec web python manage.py migrate --noinput
+    if you need push your container to docker hub
+        docker-compose -f docker-compose.prod.yaml push
+    if you write new code you need down conteither and run 1 command
+        docker-compose down -v
+
+
+

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="my-4">{% if id %} Edit {% else %} New {% endif %} Comment</h2>
+<form method="post" novalidate enctype="multipart/form-data" class="mb-5">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <h4 class="mt-4">Tags:</h4>
+    <ul class="list-group mb-4">
+        {% for comment in comment_tags %}
+        <li class="list-group-item">#{{ comment.tag.name }}</li>
+        {% endfor %}
+    </ul>
+
+    {{ tag_form.as_p }}
+    <input type="submit" value="Save" class="btn btn-primary">
+</form>
+
+{% endblock content %}

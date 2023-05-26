@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <h1>Comments</h1>
+  <div class="row">
+    <div class="col-md-8">
+      {% if comments %}
+        <p>
+          {% if request.user.is_authenticated and request.user %}
+            <a href="{% url 'comments-create' post.id %}">Comment create</a>
+          {% endif %}
+        </p>
+        {% for comment in comments %}
+          <h2>{{ comment.title }}</h2>
+          <small>Published on {{ comment.created_at | date:"M d, Y" }} by {{ comment.user | title }}</small>
+          <p>{{ comment.content }}</p>
+          <p>
+            {% for tag_comment in comment.tags.all %}
+              <small>#{{ tag_comment.tag.name }}</small>
+            {% endfor %}
+          </p>
+          <p>
+            {% if request.user.is_authenticated and request.user %}
+            <div>
+              <form action="{% url 'like-comment' comment.post.id comment.id %}" method="post">
+                {% csrf_token %}
+                    {% if request.user in comment.likes.all %}
+                        <p><button class="btn btn-danger like-ajax" type="button"> Unlike </button> <span class="count_likes" >{{ comment.likes.count }}&nbsp;</span></p>
+                    {% endif %}
+                        <p><button class="btn btn-success like-ajax" type="button"> Like&nbsp;</button> <span class="count_likes" >{{ comment.likes.count }}&nbsp;</span></p>
+              </form>
+            </div>
+            {% endif %}
+          </p>
+          {% if request.user.is_authenticated and request.user == comment.user %}
+            <p>
+              <a href="{% url 'comments-edit' comment.post.id comment.id %}">Comment edit</a>
+              <a href="{% url 'comments-delete' comment.post.id comment.id %}">Comment delete</a>
+            </p>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        <p>For this post, there aren't any comments yet!</p>
+        {% if request.user.is_authenticated %}
+          <p><a href="{% url 'comments-create' post.id %}">Be the first to comment!</a></p>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script src="{% static 'webapp/js/ajax.js' %}"></script>
+
+{% endblock content %}

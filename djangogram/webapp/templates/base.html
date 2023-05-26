@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+    <meta charset = "UTF-8">
+    <title> Djangogram </title>
+    {% load static %}
+    <script src="{%static 'webapp/js/main.js' %}"></script>
+</head>
+<body>
+<header>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+        <a class="navbar-brand" href="#">Djangogram</a>
+          {% if request.user.is_authenticated %}
+              <a href="{% url 'feed' %}" class="btn btn-primary">My feed</a>
+              <a href="{% url 'posts' %}" class="btn btn-primary">All Posts</a>
+              <a href="{% url 'post-create' %}" class="btn btn-primary">New Post</a>
+              <a href="{% url 'user-information' %}" class="btn btn-primary">My bio</a>
+              <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
+          {% else %}
+              <a class="btn-primary" href="{% url 'login' %}">Login</a>
+              <a class="btn-primary" href="{% url 'register' %}">Register</a>
+          {% endif %}
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+</header>
+<main>
+    {% if messages %}
+    <div class = "messages">
+        {% for message in messages %}
+        <div class = "alert {% if message.tags %}alert-{{ message.tags }}{%endif%}">
+        {{message}}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}
+    {% endblock content %}
+</main>
+</body>
+</html>
